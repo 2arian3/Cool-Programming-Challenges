@@ -6,4 +6,6 @@ This life simulates the life of some cells based on three simple rules:
 - All other live cells die in the next generation. Similarly, all other dead cells stay dead.
 
 A sample for the simulation on a 64 by 64 board.
+
+
 ![example](https://user-images.githubusercontent.com/49697930/88404160-be771680-cde2-11ea-8c29-7e8c64f55925.gif)
