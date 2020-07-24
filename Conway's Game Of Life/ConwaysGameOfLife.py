@@ -38,14 +38,9 @@ def rules(board):
     return newBoard
 
 def main():  
-    SIZE = 128
+    SIZE = 64
     world = World(SIZE)
     world.start()
 
 if __name__ == '__main__':
     main()
-
-
-
-
-        
