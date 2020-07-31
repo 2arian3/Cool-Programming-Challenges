@@ -49,7 +49,7 @@ while running:
         if inTheBoard((posX, posY), boardCorners):
             posX = ((posX - startX) // BLOCK_SIZE) * BLOCK_SIZE + startX
             posY = ((posY - startY) // BLOCK_SIZE) * BLOCK_SIZE + startY
-            j, i = (posX - startX) / BLOCK_SIZE, (posY - startY) / BLOCK_SIZE
+            j, i = (posX - startX) // BLOCK_SIZE, (posY - startY) // BLOCK_SIZE
             if logic.placeIsFree(logic.board, 3*i + j):
                 logic.board[3*i + j] = logic.user
                 screen.blit(x, (posX + 2, posY + 2))
@@ -61,6 +61,3 @@ while running:
             screen.blit(o, (startX + posX*BLOCK_SIZE + 2, startY + posY*BLOCK_SIZE + 2))
     pygame.display.update()
     
-
-
-
