@@ -4,7 +4,7 @@ import pygame
 import pygame_widgets
 
 '''colors'''
-#        R    G    B
+#              R    G    B
 BLACK      = (  0,   0,   0)
 WHITE      = (255, 255, 255)
 RED        = (255,   0,   0)
@@ -33,6 +33,15 @@ def drawBoard(screen):
     pygame.draw.line(screen, PINK, (START_X, START_Y + 2*BLOCK_SIZE), (START_X + 3*BLOCK_SIZE, START_Y + 2*BLOCK_SIZE), 3)
     pygame.draw.line(screen, PINK, (START_X + BLOCK_SIZE, START_Y), (START_X + BLOCK_SIZE, START_Y + 3*BLOCK_SIZE), 3)
     pygame.draw.line(screen, PINK, (START_X + 2*BLOCK_SIZE, START_Y), (START_X + 2*BLOCK_SIZE, START_Y + 3*BLOCK_SIZE), 3)
+
+'''clears the board on the screen.'''
+def resetTheBoard(screen):
+    logic.board = [''] * 9
+    blank = pygame.Surface((BLOCK_SIZE-5, BLOCK_SIZE-5))
+    blank.fill(BACKGROUND_COLOR)
+    for i in range(3):
+        for j in range(3):
+            screen.blit(blank, (START_X + i*BLOCK_SIZE + 2, START_Y + j*BLOCK_SIZE + 2))
 
 '''creating the players icons.'''
 def creatingTheIcons(xColor, oColor):
@@ -86,4 +95,6 @@ while running:
             if playerMove(screen, (posX, posY)):
                 time.sleep(1)
                 cpuMove(screen)
+    if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+        resetTheBoard(screen)
     pygame.display.update()
