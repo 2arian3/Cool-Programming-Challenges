@@ -5,17 +5,22 @@ import pygame_widgets
 
 '''colors'''
 #        R    G    B
-BLACK = (0  , 0  , 0)
-WHITE = (255, 255, 255)
-RED   = (255, 0  , 0)
+BLACK      = (  0,   0,   0)
+WHITE      = (255, 255, 255)
+RED        = (255,   0,   0)
+GREEN      = (124, 209,  65)
+DARK_BLUE  = ( 26,  38,  95)
+PINK       = (255,  20, 147)
+BLUE       = ( 54, 123, 201)
 
 '''constants'''
-SCREEN_WIDTH  = 1000
-SCREEN_HEIGHT = 1000
-BLOCK_SIZE    = 100
-START_X = (SCREEN_WIDTH - 3 * BLOCK_SIZE) // 2
-START_Y = (SCREEN_HEIGHT - 3 * BLOCK_SIZE) // 2
-BOARD_CORNERS = [(START_X, START_Y), (START_X + 3*BLOCK_SIZE, START_Y + 3*BLOCK_SIZE)]
+SCREEN_WIDTH     = 1000
+SCREEN_HEIGHT    = 1000
+BLOCK_SIZE       = 200
+START_X          = (SCREEN_WIDTH - 3 * BLOCK_SIZE) // 2
+START_Y          = (SCREEN_HEIGHT - 3 * BLOCK_SIZE) // 2
+BOARD_CORNERS    = [(START_X, START_Y), (START_X + 3*BLOCK_SIZE, START_Y + 3*BLOCK_SIZE)]
+BACKGROUND_COLOR = DARK_BLUE
 
 '''returns true if the given position is in the board.'''
 def inTheBoard(position):
@@ -23,23 +28,23 @@ def inTheBoard(position):
     return top_left[0] <= position[0] <= bottom_right[0] and top_left[1] <= position[1] <= bottom_right[1]
 
 '''drawing the board based on the constants.'''
-def drawBoard(screen, startingPosition):
-    startX, startY = startingPosition
-    pygame.draw.line(screen, BLACK, (START_X, START_Y + BLOCK_SIZE), (START_X + 3*BLOCK_SIZE, START_Y + BLOCK_SIZE), 2)
-    pygame.draw.line(screen, BLACK, (START_X, START_Y + 2*BLOCK_SIZE), (START_X + 3*BLOCK_SIZE, START_Y + 2*BLOCK_SIZE), 2)
-    pygame.draw.line(screen, BLACK, (START_X + BLOCK_SIZE, START_Y), (START_X + BLOCK_SIZE, START_Y + 3*BLOCK_SIZE), 2)
-    pygame.draw.line(screen, BLACK, (START_X + 2*BLOCK_SIZE, START_Y), (START_X + 2*BLOCK_SIZE, START_Y + 3*BLOCK_SIZE), 2)
+def drawBoard(screen):
+    pygame.draw.line(screen, PINK, (START_X, START_Y + BLOCK_SIZE), (START_X + 3*BLOCK_SIZE, START_Y + BLOCK_SIZE), 3)
+    pygame.draw.line(screen, PINK, (START_X, START_Y + 2*BLOCK_SIZE), (START_X + 3*BLOCK_SIZE, START_Y + 2*BLOCK_SIZE), 3)
+    pygame.draw.line(screen, PINK, (START_X + BLOCK_SIZE, START_Y), (START_X + BLOCK_SIZE, START_Y + 3*BLOCK_SIZE), 3)
+    pygame.draw.line(screen, PINK, (START_X + 2*BLOCK_SIZE, START_Y), (START_X + 2*BLOCK_SIZE, START_Y + 3*BLOCK_SIZE), 3)
 
 '''creating the players icons.'''
 def creatingTheIcons(xColor, oColor):
     x, o = pygame.Surface((BLOCK_SIZE-5, BLOCK_SIZE-5)), pygame.Surface((BLOCK_SIZE-5, BLOCK_SIZE-5))
-    x.fill(WHITE)
-    o.fill(WHITE)
+    x.fill(BACKGROUND_COLOR)
+    o.fill(BACKGROUND_COLOR)
     pygame.draw.circle(o, oColor, (BLOCK_SIZE // 2, BLOCK_SIZE // 2), BLOCK_SIZE // 2 - 5, 2)
     pygame.draw.aaline(x, xColor, (5, 5), (BLOCK_SIZE - 5, BLOCK_SIZE - 5), 1)
     pygame.draw.aaline(x, xColor, (5, BLOCK_SIZE - 5), (BLOCK_SIZE - 5, 5), 1)
     return x, o
 
+'''visualizing player's move.'''
 def playerMove(screen, position):
     legal = False
     posX, posY = position
@@ -53,6 +58,7 @@ def playerMove(screen, position):
     pygame.display.update()
     return legal
 
+'''cpu's move appears on the board.'''
 def cpuMove(screen):
     move = logic.cpuMove(logic.board, logic.cpu, logic.user)
     posY = move // 3
@@ -62,9 +68,9 @@ def cpuMove(screen):
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_WIDTH))
-screen.fill(WHITE)
+screen.fill(BACKGROUND_COLOR)
 pygame.display.set_caption('Tic-Tac-Toe')
-drawBoard(screen, (START_X, START_Y))
+drawBoard(screen)
 x, o = creatingTheIcons(BLACK, RED)
 pygame.display.update()
 
