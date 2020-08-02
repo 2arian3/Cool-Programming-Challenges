@@ -1,7 +1,8 @@
 import time
 import logic
 import pygame
-import pygame_widgets
+from pygame_widgets import Button
+pygame.init()
 
 '''colors'''
 #              R    G    B
@@ -14,6 +15,8 @@ PINK       = (255,  20, 147)
 BLUE       = ( 54, 123, 201)
 
 '''constants'''
+USER             = ''
+CPU              = ''
 SCREEN_WIDTH     = 1000
 SCREEN_HEIGHT    = 1000
 BLOCK_SIZE       = 200
@@ -21,6 +24,8 @@ START_X          = (SCREEN_WIDTH - 3 * BLOCK_SIZE) // 2
 START_Y          = (SCREEN_HEIGHT - 3 * BLOCK_SIZE) // 2
 BOARD_CORNERS    = [(START_X, START_Y), (START_X + 3*BLOCK_SIZE, START_Y + 3*BLOCK_SIZE)]
 BACKGROUND_COLOR = DARK_BLUE
+GAME_FONT_40     = pygame.font.SysFont('Debussy.ttf', 40)
+GAME_FONT_30     = pygame.font.SysFont('Debussy.ttf', 30)
 
 '''returns true if the given position is in the board.'''
 def inTheBoard(position):
@@ -56,13 +61,14 @@ def creatingTheIcons(xColor, oColor):
 '''visualizing player's move.'''
 def playerMove(screen, position):
     legal = False
+    playerIcon = x if USER == 'X' else o
     posX, posY = position
     posX = ((posX - START_X) // BLOCK_SIZE) * BLOCK_SIZE + START_X
     posY = ((posY - START_Y) // BLOCK_SIZE) * BLOCK_SIZE + START_Y
     j, i = (posX - START_X) // BLOCK_SIZE, (posY - START_Y) // BLOCK_SIZE
     if logic.placeIsFree(logic.board, 3*i + j):
         logic.board[3*i + j] = logic.user
-        screen.blit(x, (posX + 2, posY + 2))
+        screen.blit(playerIcon, (posX + 2, posY + 2))
         legal = True
     pygame.display.update()
     return legal
@@ -70,15 +76,62 @@ def playerMove(screen, position):
 '''cpu's move appears on the board.'''
 def cpuMove(screen):
     move = logic.cpuMove(logic.board, logic.cpu, logic.user)
+    cpuIcon = x if CPU == 'X' else o
     posY = move // 3
     posX = move % 3
-    screen.blit(o, (START_X + posX*BLOCK_SIZE + 2, START_Y + posY*BLOCK_SIZE + 2))
+    screen.blit(cpuIcon, (START_X + posX*BLOCK_SIZE + 2, START_Y + posY*BLOCK_SIZE + 2))
     pygame.display.update()
 
-pygame.init()
+def chooseIcon(icon):
+    global USER
+    global CPU
+    USER = icon
+    CPU = 'O' if icon == 'X' else 'X'
+
+def intro(screen):
+    choice = GAME_FONT_30.render('Choose between x and o !', True, PINK, DARK_BLUE)
+    choiceRect = choice.get_rect()
+    choiceRect.center = ((SCREEN_WIDTH // 2, SCREEN_WIDTH // 2 - 100))
+    xButton = Button(
+            screen, SCREEN_WIDTH//2-50, SCREEN_HEIGHT//2-50, 50, 50, text='X',
+            fontSize=30, margin=20,
+            font=GAME_FONT_30,
+            textColour=PINK,
+            inactiveColour=BACKGROUND_COLOR,
+            pressedColour=PINK, radius=5,
+            onClick=lambda: chooseIcon('X')
+         )
+    oButton = Button(
+            screen, SCREEN_WIDTH//2+50, SCREEN_HEIGHT//2-50, 50, 50, text='O',
+            fontSize=30, margin=20,
+            font=GAME_FONT_30,
+            textColour=PINK,
+            inactiveColour=BACKGROUND_COLOR,
+            pressedColour=PINK, radius=5,
+            onClick=lambda: chooseIcon('O')
+         ) 
+    screen.blit(choice, choiceRect)
+    while USER is '':
+        events = pygame.event.get()
+        oButton.listen(events)
+        xButton.listen(events)
+        oButton.draw()
+        xButton.draw()
+        pygame.display.update()
+    blank = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT - 100))
+    blank.fill(BACKGROUND_COLOR)
+    screen.blit(blank, (0, 100))
+    pygame.display.update()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_WIDTH))
 screen.fill(BACKGROUND_COLOR)
 pygame.display.set_caption('Tic-Tac-Toe')
+header = GAME_FONT_40.render('TIC TAC TOE', True, PINK, DARK_BLUE)
+headerRect = header.get_rect()
+headerRect.center = ((SCREEN_WIDTH // 2, 50))
+screen.blit(header, headerRect)
+# userTurn = gameFont30.render('It\'s your turn to move', True, PINK, DARK_BLUE)
+# cpuTurn = gameFont30.render('It\'s cpu\'s turn to move', True, PINK, DARK_BLUE)
+intro(screen)
 drawBoard(screen)
 x, o = creatingTheIcons(BLACK, RED)
 pygame.display.update()
