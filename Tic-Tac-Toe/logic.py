@@ -48,5 +48,3 @@ def cpuMove(board, cpu, user):
     return move
 
 board = [''] * 9
-user = 'x'
-cpu = 'o'
