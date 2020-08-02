@@ -88,12 +88,13 @@ def chooseIcon(icon):
     USER = icon
     CPU = 'O' if icon == 'X' else 'X'
 
+'''the intro screen.'''
 def intro(screen):
     choice = GAME_FONT_30.render('Choose between x and o !', True, PINK, DARK_BLUE)
     choiceRect = choice.get_rect()
     choiceRect.center = ((SCREEN_WIDTH // 2, SCREEN_WIDTH // 2 - 100))
     xButton = Button(
-            screen, SCREEN_WIDTH//2-50, SCREEN_HEIGHT//2-50, 50, 50, text='X',
+            screen, (SCREEN_WIDTH-50)//2+50, (SCREEN_HEIGHT-50)//2, 50, 50, text='X',
             fontSize=30, margin=20,
             font=GAME_FONT_30,
             textColour=PINK,
@@ -102,7 +103,7 @@ def intro(screen):
             onClick=lambda: chooseIcon('X')
          )
     oButton = Button(
-            screen, SCREEN_WIDTH//2+50, SCREEN_HEIGHT//2-50, 50, 50, text='O',
+            screen, (SCREEN_WIDTH-50)//2-50, (SCREEN_HEIGHT-50)//2, 50, 50, text='O',
             fontSize=30, margin=20,
             font=GAME_FONT_30,
             textColour=PINK,
@@ -122,6 +123,7 @@ def intro(screen):
     blank.fill(BACKGROUND_COLOR)
     screen.blit(blank, (0, 100))
     pygame.display.update()
+
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_WIDTH))
 screen.fill(BACKGROUND_COLOR)
 pygame.display.set_caption('Tic-Tac-Toe')
