@@ -1,9 +1,9 @@
 '''returns true if the given position in the board is free.'''
-def placeIsFree(board, position):
+def placeIsFree(position):
     return board[position] == ''
 
 '''returns true if the board is full.'''
-def boardIsFull(board):
+def boardIsFull():
     return board.count('') == 0
 
 '''checks all the possibilities of the winning and returns true if one of the conditions is satisfied.'''
