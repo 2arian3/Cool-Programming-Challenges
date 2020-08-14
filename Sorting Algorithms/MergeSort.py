@@ -54,4 +54,3 @@ anim = an.FuncAnimation(fig, func=update,
     fargs=(bars, ), frames=mergeSort(array, 0, len(array)-1), interval=1,
     repeat=False)
 plt.show()
-print(array)
