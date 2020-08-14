@@ -4,7 +4,7 @@ import numpy as np
 
 swaps = 0
 fig, ax = plt.subplots()
-ax.set_title('Bubble Sort')
+ax.set_title('Merge Sort')
 numberOfSwaps = ax.text(0.01, 0.95, "", transform=ax.transAxes)
 array = np.random.randint(100, size=(100))
 bars = ax.bar(range(len(array)), array, color='black')
