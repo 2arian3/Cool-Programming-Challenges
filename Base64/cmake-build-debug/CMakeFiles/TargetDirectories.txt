@@ -1,0 +1,3 @@
+/Users/macbookpro/Documents/Developer/Cool-Programming-Challenges/Base64/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/macbookpro/Documents/Developer/Cool-Programming-Challenges/Base64/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/macbookpro/Documents/Developer/Cool-Programming-Challenges/Base64/cmake-build-debug/CMakeFiles/Base64.dir
