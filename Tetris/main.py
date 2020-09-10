@@ -45,6 +45,15 @@ def shape_handling(shape):
                 block_positions.append((shape.x + j - 2, shape.y + i - 4))
     return block_positions
 
+def valid_move(shape, cell_colors, locked_positions):
+    valid_positions = [[(j, i) for j in range(10) if cell_colors[i][j] == (0, 0, 0)] for i in range(20)]
+    shape_positions = shape_handling(shape)
+    for pos in shape_positions:
+        if pos not in valid_positions :
+            if pos[0] < 0 or pos[0] >= 10 or pos[1] >= 20 or pos in locked_positions:
+                return False
+    return True
+
 def draw_first_menu():
     window.blit(tetris, (start_x + 5*BLOCK_SIZE - tetris.get_width() // 2, 10))
     window.blit(first_menu_text, (WIDTH // 2 - first_menu_text.get_width() // 2, HEIGHT // 2 - first_menu_text.get_height() // 2))
@@ -63,8 +72,6 @@ def draw_game_menu(cell_colors):
         pygame.draw.line(window, (128, 128, 128), (start_x, start_y + i*BLOCK_SIZE), (start_x + 10*BLOCK_SIZE, start_y + i*BLOCK_SIZE))
     for i in range(1, 10):
         pygame.draw.line(window, (128, 128, 128), (start_x + i*BLOCK_SIZE, start_y), (start_x + i*BLOCK_SIZE, start_y + 20*BLOCK_SIZE))
-    # draw_next_shape(get_shape())
-    pygame.display.update()
 
 def get_shape():
     return Shape(5, 0, random.choice(shapes))
@@ -92,36 +99,71 @@ window.fill((0, 0, 0))
 pygame.display.set_caption('TETRIS')
 
 def main(): 
-    locked_positions = dict() 
-    cell_colors = generate_cell_colors(locked_positions) 
+    locked_positions = dict()  
+    cell_colors = generate_cell_colors(locked_positions)
     running = True
+    next_move = False
     current_shape = get_shape()
     next_shape = get_shape()
+    clock = pygame.time.Clock()
+    fall_time = 0
+    level_time = 0
+    fall_speed = 0.3
     draw_game_menu(cell_colors)
 
     while running:
+
         cell_colors = generate_cell_colors(locked_positions)
+        fall_time += clock.get_rawtime()
+        level_time += clock.get_rawtime()
+        clock.tick()
+        if level_time / 1000 > 4:
+            level_time = 0
+            if fall_speed > 0.15:
+                fall_speed -= 0.005
+
+        if fall_time / 1000 >= fall_speed:
+            fall_time = 0
+            current_shape.y += 1
+            if not (valid_move(current_shape, cell_colors, locked_positions)) and current_shape.y > 0:
+                current_shape.y -= 1
+                next_move = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     current_shape.x -= 1
+                    if not valid_move(current_shape, cell_colors, locked_positions):
+                        current_shape.x += 1
                 
                 elif event.key == pygame.K_RIGHT:
                     current_shape.x += 1
+                    if not valid_move(current_shape, cell_colors, locked_positions):
+                        current_shape.x -= 1
                 
                 elif event.key == pygame.K_DOWN:
                     current_shape.y += 1
+                    if not valid_move(current_shape, cell_colors, locked_positions):
+                        current_shape.y -= 1
 
                 elif event.key == pygame.K_UP:
-                    current_shape.rotation += 1
-                    current_shape.rotation %= len(current_shape.shape)
+                    current_shape.rotation = current_shape.rotation + 1 % len(current_shape.shape)
+                    if not valid_move(current_shape, cell_colors, locked_positions):
+                        current_shape.rotation = current_shape.rotation - 1 % len(current_shape.shape)
         shape_positions = shape_handling(current_shape)
         for x, y in shape_positions:
             if y >= 0:
                 cell_colors[y][x] = current_shape.color
+        if next_move:
+            for pos in shape_positions:
+                locked_positions[pos] = current_shape.color
+            current_shape = next_shape
+            next_shape = get_shape()
+            next_move = False
         draw_game_menu(cell_colors)
+        draw_next_shape(next_shape)
+        pygame.display.update()
 def first_menu():
     draw_first_menu()
     running = True
