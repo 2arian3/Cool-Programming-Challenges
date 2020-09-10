@@ -21,6 +21,7 @@ next_shape = FONT2.render('next shape', True, (255, 0, 0))
 first_menu_text = FONT1.render('To start the game, press any button', True, (255, 0, 0))
 producer = FONT3.render('produced by arian boukani', True, (255, 0, 0))
 version = FONT3.render('version 1.0', True, (255, 0, 0))
+you_lost = FONT2.render('you lost :(', True, (255, 0, 0))
 
 score = 0
 start_x = (WIDTH - BOARD_WIDTH) // 2
@@ -34,6 +35,12 @@ class Shape:
         self.shape = shape
         self.color = colors[shapes.index(shape)]
         self.rotation = 0
+
+def lost(locked_positions):
+    for locked_position in locked_positions:
+        if locked_position[1] <= 0:
+            return True
+    return False
 
 def shape_handling(shape):
     block_positions = []
@@ -161,9 +168,16 @@ def main():
             current_shape = next_shape
             next_shape = get_shape()
             next_move = False
+        if lost(locked_positions):
+            running = False
         draw_game_menu(cell_colors)
         draw_next_shape(next_shape)
         pygame.display.update()
+
+    window.blit(you_lost, (start_x // 2 - you_lost.get_width() // 2, start_y))
+    pygame.display.update()
+    pygame.time.delay(3000)
+
 def first_menu():
     draw_first_menu()
     running = True
