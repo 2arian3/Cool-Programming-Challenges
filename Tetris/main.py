@@ -33,11 +33,11 @@ class Shape:
         self.y = row
         self.shape = shape
         self.color = colors[shapes.index(shape)]
-        self.rotations = 0
+        self.rotation = 0
 
 def shape_handling(shape):
     block_positions = []
-    s = shape.shape[shape.rotations % len(shape.shape)]
+    s = shape.shape[shape.rotation % len(shape.shape)]
     for i, line in enumerate(s):
         row = list(line)
         for j, column in enumerate(row):
