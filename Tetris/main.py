@@ -27,6 +27,7 @@ score = 0
 start_x = (WIDTH - BOARD_WIDTH) // 2
 start_y = (HEIGHT - BOARD_HEIGHT) // 2
 
+#Class for each shape used in the game containing their attributes
 class Shape:
 
     def __init__(self, column, row, shape):
@@ -36,12 +37,14 @@ class Shape:
         self.color = colors[shapes.index(shape)]
         self.rotation = 0
 
+#After each next shape checks the losing condition
 def lost(locked_positions):
     for locked_position in locked_positions:
         if locked_position[1] <= 0:
             return True
     return False
 
+#Creates each shape based on the shapes list in shapes.py module
 def shape_handling(shape):
     block_positions = []
     s = shape.shape[shape.rotation % len(shape.shape)]
@@ -52,6 +55,7 @@ def shape_handling(shape):
                 block_positions.append((shape.x + j - 2, shape.y + i - 4))
     return block_positions
 
+#Checks whether the next move is legal or not
 def valid_move(shape, cell_colors, locked_positions):
     valid_positions = [[(j, i) for j in range(10) if cell_colors[i][j] == (0, 0, 0)] for i in range(20)]
     shape_positions = shape_handling(shape)
@@ -61,13 +65,15 @@ def valid_move(shape, cell_colors, locked_positions):
                 return False
     return True
 
+#Draws the first menu using pygame modules
 def draw_first_menu():
     window.blit(tetris, (start_x + 5*BLOCK_SIZE - tetris.get_width() // 2, 10))
     window.blit(first_menu_text, (WIDTH // 2 - first_menu_text.get_width() // 2, HEIGHT // 2 - first_menu_text.get_height() // 2))
     window.blit(producer, (WIDTH // 2 - producer.get_width() // 2, HEIGHT - 2 * producer.get_height()))
     window.blit(version, (WIDTH // 2 - version.get_width() // 2, HEIGHT -  version.get_height()))
     pygame.display.update()
-    
+
+# draws each frame of the game 
 def draw_game_menu(cell_colors):
     window.fill((0, 0, 0))
     window.blit(tetris, (start_x + 5*BLOCK_SIZE - tetris.get_width() // 2, 10))
@@ -80,9 +86,11 @@ def draw_game_menu(cell_colors):
     for i in range(1, 10):
         pygame.draw.line(window, (128, 128, 128), (start_x + i*BLOCK_SIZE, start_y), (start_x + i*BLOCK_SIZE, start_y + 20*BLOCK_SIZE))
 
+#Returns a random shape
 def get_shape():
     return Shape(5, 0, random.choice(shapes))
 
+#Handling the next shape panel
 def draw_next_shape(shape):
     window.blit(next_shape, (10*BLOCK_SIZE + ((WIDTH - 10*BLOCK_SIZE + start_x)//2 - next_shape.get_width()//2), start_y))
     x = start_x + 11*BLOCK_SIZE 
@@ -93,6 +101,7 @@ def draw_next_shape(shape):
             if column is '*':
                 pygame.draw.rect(window, shape.color, (x + j*BLOCK_SIZE, y + i*BLOCK_SIZE, 34, 34), 0)
 
+#Generates each cell color after each frame of the game based on locked positions
 def generate_cell_colors(locked_positions):
     cell_colors = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]
     for i in range(20):
@@ -101,16 +110,15 @@ def generate_cell_colors(locked_positions):
                 cell_colors[i][j] = locked_positions[(j, i)]
     return cell_colors
 
-window = pygame.display.set_mode((WIDTH, HEIGHT))
-window.fill((0, 0, 0))
-pygame.display.set_caption('TETRIS')
-
-def row_full(cell_colors):
+#Checks each row of the board. if it is full, returns the indices of the full rows
+def full_rows(cell_colors):
+    full_rows_indices = []
     for line in cell_colors:
         if (0, 0, 0) not in line:
-            return cell_colors.index(line)
-    return False
+            full_rows_indices.append(cell_colors.index(line))
+    return full_rows_indices
 
+#Cleans the full row and shifts the upper rows down
 def clean_row(cell_colors, index, locked_positions):
     global score
     score += 10
@@ -128,6 +136,7 @@ def clean_row(cell_colors, index, locked_positions):
             pass
     locked_positions.update(updated)
 
+#Main menu
 def main(): 
     locked_positions = dict()  
     cell_colors = generate_cell_colors(locked_positions)
@@ -191,9 +200,10 @@ def main():
             current_shape = next_shape
             next_shape = get_shape()
             next_move = False
-            condition = row_full(cell_colors)
-            if condition:
-                clean_row(cell_colors, condition, locked_positions)
+            full_rows_indices = full_rows(cell_colors)
+            if len(full_rows_indices):
+                for row in full_rows_indices:
+                    clean_row(cell_colors, row, locked_positions)
         if lost(locked_positions):
             running = False
         draw_game_menu(cell_colors)
@@ -204,6 +214,7 @@ def main():
     pygame.display.update()
     pygame.time.delay(3000)
 
+#First menu graphics
 def first_menu():
     draw_first_menu()
     running = True
@@ -214,6 +225,10 @@ def first_menu():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 main()
+
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+window.fill((0, 0, 0))
+pygame.display.set_caption('TETRIS')
 
 if __name__ == '__main__':
     first_menu()
