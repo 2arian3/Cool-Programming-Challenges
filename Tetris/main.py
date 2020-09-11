@@ -231,6 +231,8 @@ window.fill((0, 0, 0))
 pygame.display.set_caption('TETRIS')
 
 if __name__ == '__main__':
+    pygame.mixer.music.load('Tetris.mp3')
+    pygame.mixer.music.play(-1)
     first_menu()
 
 pygame.display.quit()
