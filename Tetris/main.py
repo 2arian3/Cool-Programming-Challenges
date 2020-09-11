@@ -105,6 +105,29 @@ window = pygame.display.set_mode((WIDTH, HEIGHT))
 window.fill((0, 0, 0))
 pygame.display.set_caption('TETRIS')
 
+def row_full(cell_colors):
+    for line in cell_colors:
+        if (0, 0, 0) not in line:
+            return cell_colors.index(line)
+    return False
+
+def clean_row(cell_colors, index, locked_positions):
+    global score
+    score += 10
+    updated = dict(((pos[0], pos[1]+1), color) for (pos, color) in locked_positions.items() if pos[1] < index)
+    to_be_removed = [cell for cell in locked_positions if cell[1] <= index]
+    cell_colors.pop(index)
+    new_cells = [(0, 0, 0) for _ in range(10)]
+    cell_colors.reverse()
+    cell_colors.append(new_cells)
+    cell_colors.reverse()
+    for cell in to_be_removed:
+        try:
+            del locked_positions[cell]
+        except:
+            pass
+    locked_positions.update(updated)
+
 def main(): 
     locked_positions = dict()  
     cell_colors = generate_cell_colors(locked_positions)
@@ -168,6 +191,9 @@ def main():
             current_shape = next_shape
             next_shape = get_shape()
             next_move = False
+            condition = row_full(cell_colors)
+            if condition:
+                clean_row(cell_colors, condition, locked_positions)
         if lost(locked_positions):
             running = False
         draw_game_menu(cell_colors)
