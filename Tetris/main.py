@@ -6,13 +6,13 @@ pygame.init()
 
 #Constants
 WIDTH        = 800
-HEIGHT       = 800
-BLOCK_SIZE   = 35
+HEIGHT       = 700
+BLOCK_SIZE   = 30
 BOARD_WIDTH  = 10 * BLOCK_SIZE
 BOARD_HEIGHT = 20 * BLOCK_SIZE
-FONT1        = pygame.font.SysFont('FFF phantom 01.ttf', 20)
-FONT2        = pygame.font.SysFont('FFF phantom 01.ttf', 15)
-FONT3        = pygame.font.SysFont('FFF phantom 01.ttf', 10)
+FONT1        = pygame.font.SysFont('requiries/FFF phantom 01.ttf', 20)
+FONT2        = pygame.font.SysFont('requiries/FFF phantom 01.ttf', 15)
+FONT3        = pygame.font.SysFont('requiries/FFF phantom 01.ttf', 10)
 
 
 #Texts used in the game
@@ -79,7 +79,7 @@ def draw_game_menu(cell_colors):
     window.blit(tetris, (start_x + 5*BLOCK_SIZE - tetris.get_width() // 2, 10))
     for i in range(20):
         for j in range(10):
-            pygame.draw.rect(window, cell_colors[i][j], (start_x + j*BLOCK_SIZE, start_y + i*BLOCK_SIZE, 35, 35), 0)
+            pygame.draw.rect(window, cell_colors[i][j], (start_x + j*BLOCK_SIZE, start_y + i*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
     pygame.draw.rect(window, (255, 255, 255), (start_x, start_y, 10*BLOCK_SIZE, 20*BLOCK_SIZE), 3)
     for i in range(1, 20):
         pygame.draw.line(window, (128, 128, 128), (start_x, start_y + i*BLOCK_SIZE), (start_x + 10*BLOCK_SIZE, start_y + i*BLOCK_SIZE))
@@ -99,7 +99,7 @@ def draw_next_shape(shape):
         row = list(line)
         for j, column in enumerate(row):
             if column is '*':
-                pygame.draw.rect(window, shape.color, (x + j*BLOCK_SIZE, y + i*BLOCK_SIZE, 34, 34), 0)
+                pygame.draw.rect(window, shape.color, (x + j*BLOCK_SIZE, y + i*BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1), 0)
 
 #Generates each cell color after each frame of the game based on locked positions
 def generate_cell_colors(locked_positions):
@@ -231,7 +231,7 @@ window.fill((0, 0, 0))
 pygame.display.set_caption('TETRIS')
 
 if __name__ == '__main__':
-    pygame.mixer.music.load('Tetris.mp3')
+    pygame.mixer.music.load('requiries/Tetris.mp3')
     pygame.mixer.music.play(-1)
     first_menu()
 
