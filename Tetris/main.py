@@ -23,6 +23,7 @@ first_menu_text = FONT1.render('To start the game, press any button', True, (255
 producer = FONT3.render('produced by arian boukani', True, (255, 0, 0))
 version = FONT3.render('version 1.0', True, (255, 0, 0))
 you_lost = FONT2.render('you lost :(', True, (255, 0, 0))
+score_text = FONT2.render('score', True, (255, 0, 0))
 
 score = 0
 start_x = (WIDTH - BOARD_WIDTH) // 2
@@ -86,14 +87,15 @@ def draw_game_menu(cell_colors):
         pygame.draw.line(window, (128, 128, 128), (start_x, start_y + i*BLOCK_SIZE), (start_x + 10*BLOCK_SIZE, start_y + i*BLOCK_SIZE))
     for i in range(1, 10):
         pygame.draw.line(window, (128, 128, 128), (start_x + i*BLOCK_SIZE, start_y), (start_x + i*BLOCK_SIZE, start_y + 20*BLOCK_SIZE))
-
+    window.blit(producer, (WIDTH // 2 - producer.get_width() // 2, HEIGHT - 2 * producer.get_height()))
+    window.blit(version, (WIDTH // 2 - version.get_width() // 2, HEIGHT -  version.get_height()))
 #Returns a random shape
 def get_shape():
     return Shape(5, 0, random.choice(shapes))
 
 #Handling the next shape panel
 def draw_next_shape(shape):
-    window.blit(next_shape, (10*BLOCK_SIZE + ((WIDTH - 10*BLOCK_SIZE + start_x)//2 - next_shape.get_width()//2), start_y))
+    window.blit(next_shape, (BOARD_WIDTH + ((WIDTH - BOARD_WIDTH + start_x)//2 - next_shape.get_width()//2), start_y))
     x = start_x + 11*BLOCK_SIZE 
     y = start_y + BLOCK_SIZE
     for i, line in enumerate(shape.shape[0]):
@@ -101,6 +103,12 @@ def draw_next_shape(shape):
         for j, column in enumerate(row):
             if column is '*':
                 pygame.draw.rect(window, shape.color, (x + j*BLOCK_SIZE, y + i*BLOCK_SIZE, BLOCK_SIZE-1, BLOCK_SIZE-1), 0)
+
+#Handling the score board panel
+def draw_score_panel():
+    window.blit(score_text, (start_x // 2 - score_text.get_width() // 2, start_y))
+    s = FONT2.render(str(score), True, (255, 0, 0))
+    window.blit(s, (start_x // 2 - s.get_width() // 2, start_y + BLOCK_SIZE))
 
 #Generates each cell color after each frame of the game based on locked positions
 def generate_cell_colors(locked_positions):
@@ -209,9 +217,11 @@ def main():
             running = False
         draw_game_menu(cell_colors)
         draw_next_shape(next_shape)
+        draw_score_panel()
         pygame.display.update()
 
-    window.blit(you_lost, (start_x // 2 - you_lost.get_width() // 2, start_y))
+    window.blit(you_lost, (start_x // 2 - you_lost.get_width() // 2, start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
+    window.blit(you_lost, (BOARD_WIDTH + ((WIDTH - BOARD_WIDTH + start_x)//2 - you_lost.get_width()//2), start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
     pygame.display.update()
     pygame.time.delay(3000)
 
@@ -232,8 +242,8 @@ window.fill((0, 0, 0))
 pygame.display.set_caption('TETRIS')
 
 if __name__ == '__main__':
-    pygame.mixer.music.load('requiries/Tetris.mp3')
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.music.load('requiries/Tetris.mp3')
+    # pygame.mixer.music.play(-1)
     first_menu()
 
 pygame.display.quit()
