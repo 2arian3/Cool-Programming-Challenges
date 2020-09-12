@@ -3,16 +3,17 @@ import random
 from shapes import shapes, colors
 
 pygame.init()
+screen_info = pygame.display.Info()
 
 #Constants
 WIDTH        = 800
-HEIGHT       = 700
-BLOCK_SIZE   = 30
+HEIGHT       = 800 if screen_info.current_h > 1080 else 700
+BLOCK_SIZE   = 35 if screen_info.current_h > 1080 else 30
 BOARD_WIDTH  = 10 * BLOCK_SIZE
 BOARD_HEIGHT = 20 * BLOCK_SIZE
-FONT1        = pygame.font.SysFont('requiries/FFF phantom 01.ttf', 20)
-FONT2        = pygame.font.SysFont('requiries/FFF phantom 01.ttf', 15)
-FONT3        = pygame.font.SysFont('requiries/FFF phantom 01.ttf', 10)
+FONT1        = pygame.font.Font('requiries/FFF phantom 01.ttf', 20)
+FONT2        = pygame.font.Font('requiries/FFF phantom 01.ttf', 15)
+FONT3        = pygame.font.Font('requiries/FFF phantom 01.ttf', 10)
 
 
 #Texts used in the game
