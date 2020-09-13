@@ -1,5 +1,4 @@
 import pygame
-import random
 from shapes import shapes, colors
 
 pygame.init()
@@ -29,6 +28,7 @@ producer = FONT3.render('produced by arian boukani', True, TEXT_COLOR)
 version = FONT3.render('version 1.0', True, TEXT_COLOR)
 you_lost = FONT2.render('you lost :(', True, TEXT_COLOR)
 score_text = FONT2.render('score', True, TEXT_COLOR)
+tip = FONT2.render('TIP : to rotate the shape, press up key', True, TEXT_COLOR)
 
 score = 0
 start_x = (WIDTH - BOARD_WIDTH) // 2
@@ -76,6 +76,7 @@ def valid_move(shape, cell_colors, locked_positions):
 def draw_first_menu():
     window.blit(tetris, (start_x + 5*BLOCK_SIZE - tetris.get_width() // 2, 10))
     window.blit(first_menu_text, (WIDTH // 2 - first_menu_text.get_width() // 2, HEIGHT // 2 - first_menu_text.get_height() // 2))
+    window.blit(tip, (WIDTH // 2 - tip.get_width() // 2, HEIGHT // 2 - first_menu_text.get_height() // 2 + tip.get_height() + 10))
     window.blit(producer, (WIDTH // 2 - producer.get_width() // 2, HEIGHT - 2 * producer.get_height()))
     window.blit(version, (WIDTH // 2 - version.get_width() // 2, HEIGHT -  version.get_height()))
     pygame.display.update()
@@ -96,6 +97,7 @@ def draw_game_menu(cell_colors):
     window.blit(version, (WIDTH // 2 - version.get_width() // 2, HEIGHT -  version.get_height()))
 #Returns a random shape
 def get_shape():
+    import random
     return Shape(5, 0, random.choice(shapes))
 
 #Handling the next shape panel
@@ -154,6 +156,8 @@ def clean_row(cell_colors, index, locked_positions):
 def main(): 
     global score
     score = 0
+    done = False
+    #locked_positions contains the colors and the positions of the not moving shapes
     locked_positions = dict()  
     cell_colors = generate_cell_colors(locked_positions)
     running = True
@@ -172,6 +176,7 @@ def main():
         fall_time += clock.get_rawtime()
         level_time += clock.get_rawtime()
         clock.tick(FPS)
+        #increasing the speed of shape falling to make the game more realistic
         if level_time / 1000 > 4:
             level_time = 0
             if fall_speed > 0.15:
@@ -184,8 +189,10 @@ def main():
                 current_shape.y -= 1
                 next_move = True
         for event in pygame.event.get():
+            #Handling the pressed key
             if event.type == pygame.QUIT:
                 running = False
+                done = True
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     current_shape.x -= 1
@@ -226,23 +233,26 @@ def main():
         draw_next_shape(next_shape)
         draw_score_panel()
         pygame.display.update()
-
-    window.blit(you_lost, (start_x // 2 - you_lost.get_width() // 2, start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
-    window.blit(you_lost, (BOARD_WIDTH + ((WIDTH - BOARD_WIDTH + start_x)//2 - you_lost.get_width()//2), start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
-    window.blit(play_again, (WIDTH // 2 - play_again.get_width() // 2, start_y + 21 * BLOCK_SIZE))
+    if not done:
+        window.blit(you_lost, (start_x // 2 - you_lost.get_width() // 2, start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
+        window.blit(you_lost, (BOARD_WIDTH + ((WIDTH - BOARD_WIDTH + start_x)//2 - you_lost.get_width()//2), start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
+        window.blit(play_again, (WIDTH // 2 - play_again.get_width() // 2, start_y + 21 * BLOCK_SIZE))
     pygame.display.update()
+    return done
 
 #First menu graphics
 def first_menu():
     draw_first_menu()
     running = True
-
+    done = False
     while running:
+        if done:
+            return
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                main()
+                done = main()
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 window.fill(BACKGROUND_COLOR)
