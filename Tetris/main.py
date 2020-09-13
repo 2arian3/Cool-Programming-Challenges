@@ -9,7 +9,7 @@ screen_info = pygame.display.Info()
 FPS          = 120
 WIDTH        = 800
 HEIGHT       = 800 if screen_info.current_h > 1080 else 600
-BLOCK_SIZE   = 35 if screen_info.current_h > 1080 else 30
+BLOCK_SIZE   = 30 if screen_info.current_h > 1080 else 20
 BOARD_WIDTH  = 10 * BLOCK_SIZE
 BOARD_HEIGHT = 20 * BLOCK_SIZE
 FONT1        = pygame.font.Font('requiries/FFF phantom 01.ttf', 20)
@@ -243,8 +243,8 @@ window.fill((0, 0, 0))
 pygame.display.set_caption('TETRIS')
 
 if __name__ == '__main__':
-    # pygame.mixer.music.load('requiries/Tetris.mp3')
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.music.load('requiries/Tetris.mp3')
+    pygame.mixer.music.play(-1)
     first_menu()
 
 pygame.display.quit()
