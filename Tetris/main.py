@@ -6,8 +6,9 @@ pygame.init()
 screen_info = pygame.display.Info()
 
 #Constants
+FPS          = 120
 WIDTH        = 800
-HEIGHT       = 800 if screen_info.current_h > 1080 else 700
+HEIGHT       = 800 if screen_info.current_h > 1080 else 600
 BLOCK_SIZE   = 35 if screen_info.current_h > 1080 else 30
 BOARD_WIDTH  = 10 * BLOCK_SIZE
 BOARD_HEIGHT = 20 * BLOCK_SIZE
@@ -164,13 +165,13 @@ def main():
         cell_colors = generate_cell_colors(locked_positions)
         fall_time += clock.get_rawtime()
         level_time += clock.get_rawtime()
-        clock.tick()
+        clock.tick(FPS)
         if level_time / 1000 > 4:
             level_time = 0
             if fall_speed > 0.15:
                 fall_speed -= 0.005
 
-        if fall_time / 1000 >= fall_speed:
+        if fall_time / 500 >= fall_speed:
             fall_time = 0
             current_shape.y += 1
             if not (valid_move(current_shape, cell_colors, locked_positions)) and current_shape.y > 0:
