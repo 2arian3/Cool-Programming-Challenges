@@ -6,25 +6,29 @@ pygame.init()
 screen_info = pygame.display.Info()
 
 #Constants
-FPS          = 120
-WIDTH        = 800
-HEIGHT       = 800 if screen_info.current_h > 1080 else 600
-BLOCK_SIZE   = 30 if screen_info.current_h > 1080 else 20
-BOARD_WIDTH  = 10 * BLOCK_SIZE
+FPS = 120
+WIDTH = 800
+HEIGHT = 800 if screen_info.current_h > 1080 else 600
+BLOCK_SIZE = 30 if screen_info.current_h > 1080 else 20
+BOARD_WIDTH = 10 * BLOCK_SIZE
 BOARD_HEIGHT = 20 * BLOCK_SIZE
-FONT1        = pygame.font.Font('requiries/FFF phantom 01.ttf', 20)
-FONT2        = pygame.font.Font('requiries/FFF phantom 01.ttf', 15)
-FONT3        = pygame.font.Font('requiries/FFF phantom 01.ttf', 10)
+BACKGROUND_COLOR = (0, 0, 0)
+BORDER_COLOR = (128, 128, 128)
+TEXT_COLOR = (255, 0, 0)
+FONT1 = pygame.font.Font('requiries/FFF phantom 01.ttf', 20)
+FONT2 = pygame.font.Font('requiries/FFF phantom 01.ttf', 15)
+FONT3 = pygame.font.Font('requiries/FFF phantom 01.ttf', 10)
 
 
 #Texts used in the game
-tetris = FONT1.render('Tetris', True, (255, 0, 0))
-next_shape = FONT2.render('next shape', True, (255, 0, 0))
-first_menu_text = FONT1.render('To start the game, press any button', True, (255, 0, 0))
-producer = FONT3.render('produced by arian boukani', True, (255, 0, 0))
-version = FONT3.render('version 1.0', True, (255, 0, 0))
-you_lost = FONT2.render('you lost :(', True, (255, 0, 0))
-score_text = FONT2.render('score', True, (255, 0, 0))
+tetris = FONT1.render('Tetris', True, TEXT_COLOR)
+next_shape = FONT2.render('next shape', True, TEXT_COLOR)
+first_menu_text = FONT1.render('To start the game, press any button', True, TEXT_COLOR)
+play_again = FONT2.render('press any button to play again', True, TEXT_COLOR)
+producer = FONT3.render('produced by arian boukani', True, TEXT_COLOR)
+version = FONT3.render('version 1.0', True, TEXT_COLOR)
+you_lost = FONT2.render('you lost :(', True, TEXT_COLOR)
+score_text = FONT2.render('score', True, TEXT_COLOR)
 
 score = 0
 start_x = (WIDTH - BOARD_WIDTH) // 2
@@ -83,11 +87,11 @@ def draw_game_menu(cell_colors):
     for i in range(20):
         for j in range(10):
             pygame.draw.rect(window, cell_colors[i][j], (start_x + j*BLOCK_SIZE, start_y + i*BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
-    pygame.draw.rect(window, (255, 255, 255), (start_x, start_y, 10*BLOCK_SIZE, 20*BLOCK_SIZE), 3)
+    pygame.draw.rect(window, TEXT_COLOR, (start_x, start_y, 10*BLOCK_SIZE, 20*BLOCK_SIZE), 3)
     for i in range(1, 20):
-        pygame.draw.line(window, (128, 128, 128), (start_x, start_y + i*BLOCK_SIZE), (start_x + 10*BLOCK_SIZE, start_y + i*BLOCK_SIZE))
+        pygame.draw.line(window, BORDER_COLOR, (start_x, start_y + i*BLOCK_SIZE), (start_x + 10*BLOCK_SIZE, start_y + i*BLOCK_SIZE))
     for i in range(1, 10):
-        pygame.draw.line(window, (128, 128, 128), (start_x + i*BLOCK_SIZE, start_y), (start_x + i*BLOCK_SIZE, start_y + 20*BLOCK_SIZE))
+        pygame.draw.line(window, BORDER_COLOR, (start_x + i*BLOCK_SIZE, start_y), (start_x + i*BLOCK_SIZE, start_y + 20*BLOCK_SIZE))
     window.blit(producer, (WIDTH // 2 - producer.get_width() // 2, HEIGHT - 2 * producer.get_height()))
     window.blit(version, (WIDTH // 2 - version.get_width() // 2, HEIGHT -  version.get_height()))
 #Returns a random shape
@@ -113,7 +117,7 @@ def draw_score_panel():
 
 #Generates each cell color after each frame of the game based on locked positions
 def generate_cell_colors(locked_positions):
-    cell_colors = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]
+    cell_colors = [[BACKGROUND_COLOR for _ in range(10)] for _ in range(20)]
     for i in range(20):
         for j in range(10):
             if (j, i) in locked_positions:
@@ -124,7 +128,7 @@ def generate_cell_colors(locked_positions):
 def full_rows(cell_colors):
     full_rows_indices = []
     for line in cell_colors:
-        if (0, 0, 0) not in line:
+        if BACKGROUND_COLOR not in line:
             full_rows_indices.append(cell_colors.index(line))
     return full_rows_indices
 
@@ -135,7 +139,7 @@ def clean_row(cell_colors, index, locked_positions):
     updated = dict(((pos[0], pos[1]+1), color) for (pos, color) in locked_positions.items() if pos[1] < index)
     to_be_removed = [cell for cell in locked_positions if cell[1] <= index]
     cell_colors.pop(index)
-    new_cells = [(0, 0, 0) for _ in range(10)]
+    new_cells = [BACKGROUND_COLOR for _ in range(10)]
     cell_colors.reverse()
     cell_colors.append(new_cells)
     cell_colors.reverse()
@@ -148,6 +152,8 @@ def clean_row(cell_colors, index, locked_positions):
 
 #Main menu
 def main(): 
+    global score
+    score = 0
     locked_positions = dict()  
     cell_colors = generate_cell_colors(locked_positions)
     running = True
@@ -223,8 +229,8 @@ def main():
 
     window.blit(you_lost, (start_x // 2 - you_lost.get_width() // 2, start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
     window.blit(you_lost, (BOARD_WIDTH + ((WIDTH - BOARD_WIDTH + start_x)//2 - you_lost.get_width()//2), start_y + BOARD_HEIGHT // 2 - you_lost.get_height()))
+    window.blit(play_again, (WIDTH // 2 - play_again.get_width() // 2, start_y + 21 * BLOCK_SIZE))
     pygame.display.update()
-    pygame.time.delay(3000)
 
 #First menu graphics
 def first_menu():
@@ -239,7 +245,7 @@ def first_menu():
                 main()
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-window.fill((0, 0, 0))
+window.fill(BACKGROUND_COLOR)
 pygame.display.set_caption('TETRIS')
 
 if __name__ == '__main__':
