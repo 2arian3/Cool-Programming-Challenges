@@ -5,4 +5,5 @@ You can easily play this one in your computer if you have pygame installed on yo
 If your are a mac user, due to MacOS incompatibilities with pygame, you should try the pygame 2.0.0.dev8 version or higher on your laptop.
 I also recommend you to visit this [link](https://www.dailydot.com/parsec/tetris-game-facts/) and check out 25 interesting facts about this popular and simple game.
 HOPE YOU ENJOY!
+
 ![Tetris](https://user-images.githubusercontent.com/49697930/93031409-c06d9100-f63f-11ea-841f-3b6629d6d3af.gif)
