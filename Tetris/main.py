@@ -83,7 +83,7 @@ def draw_first_menu():
 
 # draws each frame of the game 
 def draw_game_menu(cell_colors):
-    window.fill((0, 0, 0))
+    window.fill(BACKGROUND_COLOR)
     window.blit(tetris, (start_x + 5*BLOCK_SIZE - tetris.get_width() // 2, 10))
     for i in range(20):
         for j in range(10):
