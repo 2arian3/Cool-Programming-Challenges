@@ -64,7 +64,7 @@ def shape_handling(shape):
 
 #Checks whether the next move is legal or not
 def valid_move(shape, cell_colors, locked_positions):
-    valid_positions = [[(j, i) for j in range(10) if cell_colors[i][j] == (0, 0, 0)] for i in range(20)]
+    valid_positions = [[(j, i) for j in range(10) if cell_colors[i][j] == BACKGROUND_COLOR] for i in range(20)]
     shape_positions = shape_handling(shape)
     for pos in shape_positions:
         if pos not in valid_positions :
@@ -114,7 +114,7 @@ def draw_next_shape(shape):
 #Handling the score board panel
 def draw_score_panel():
     window.blit(score_text, (start_x // 2 - score_text.get_width() // 2, start_y))
-    s = FONT2.render(str(score), True, (255, 0, 0))
+    s = FONT2.render(str(score), True, TEXT_COLOR)
     window.blit(s, (start_x // 2 - s.get_width() // 2, start_y + BLOCK_SIZE))
 
 #Generates each cell color after each frame of the game based on locked positions
