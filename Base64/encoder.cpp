@@ -13,9 +13,15 @@ char base64_mapping(char binary){
 std::string base64_encoding(unsigned char* text){
     std::string converted;
     converted += base64_mapping(text[0] >> 2);
-    converted += base64_mapping((text[1] >> 4) | ((text[0] & 0b11) << 4));
-    converted += base64_mapping((text[2] >> 6) | ((text[1] & 0b1111) << 2));
-    converted += base64_mapping(text[2] & 0b111111);
+    if (text[1]) {
+        converted += base64_mapping((text[1] >> 4) | ((text[0] & 0b11) << 4));
+        if (text[2]) {
+           converted += base64_mapping((text[2] >> 6) | ((text[1] & 0b1111) << 2));
+           converted += base64_mapping(text[2] & 0b111111);
+        }else
+            converted += base64_mapping((text[1] & 0b1111) << 2);
+    } else 
+        converted += base64_mapping((text[0] & 0b11) << 4);
     return converted;
 }
 
@@ -41,12 +47,13 @@ int main(int argc, char **argv) {
             if(j == 3 || i == int(size)-1){
                 encoded += base64_encoding(temp);
                 j = 0;
+                temp = new unsigned char[3];
             }
         }
 
         if(int(size)%3)
             for(int i = 0; i < 3 - int(size)%3; i++)
-                encoded[encoded.size()-1-i] = '=';
+                encoded += '=';
 
         delete[] buffer;
         std::ofstream output_file ("encoded_input");
