@@ -13,27 +13,21 @@ char base64_mapping(char binary){
 std::string base64_encoding(unsigned char* text){
     std::string converted;
     converted += base64_mapping(text[0] >> 2);
-    if (text[1]) {
-        converted += base64_mapping((text[1] >> 4) | ((text[0] & 0b11) << 4));
-        if (text[2]) {
-           converted += base64_mapping((text[2] >> 6) | ((text[1] & 0b1111) << 2));
-           converted += base64_mapping(text[2] & 0b111111);
-        }else
-            converted += base64_mapping((text[1] & 0b1111) << 2);
-    } else 
-        converted += base64_mapping((text[0] & 0b11) << 4);
+    converted += base64_mapping((text[1] >> 4) | ((text[0] & 0b11) << 4));
+    converted += base64_mapping((text[2] >> 6) | ((text[1] & 0b1111) << 2));
+    converted += base64_mapping(text[2] & 0b111111);
     return converted;
 }
 
 int main(int argc, char **argv) {
-    if(argc != 2){
+    if (argc != 2){
         std::cout << "Illegal input..." << std::endl;
         return -1;
     }
 
     std::string encoded;
     std::ifstream input_file (argv[1], std::ios::ate | std::ios::binary);
-    if(input_file.is_open()){
+    if (input_file.is_open()){
 
         std::streampos size = input_file.tellg();
         char *buffer = new char[size];
@@ -42,18 +36,22 @@ int main(int argc, char **argv) {
         input_file.read(buffer, size);
 
         int j = 0;
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++){
             temp[j++] = buffer[i] & 0xFF;
-            if(j == 3 || i == int(size)-1){
-                encoded += base64_encoding(temp);
+            if (j == 3){
                 j = 0;
+                encoded += base64_encoding(temp);
                 temp = new unsigned char[3];
             }
         }
 
-        if(int(size)%3)
-            for(int i = 0; i < 3 - int(size)%3; i++)
+        if (int(size)%3) {
+            for (int i = 0; i < 3 - int(size)%3; i++)
+                temp[3-i] = 0;
+            encoded += base64_encoding(temp);
+            for (int i = 0; i < 3 - int(size)%3; i++)
                 encoded += '=';
+        }
 
         delete[] buffer;
         std::ofstream output_file ("encoded_input");
