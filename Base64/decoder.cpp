@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
         input_file.close();
         output_file.close();
     } else{
-        std::cout << "Cannot open the text file :/" << std::endl;
+        std::cout << "Cannot open the given file :/" << std::endl;
         return -1;
     }
     return 0;
