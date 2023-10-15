@@ -25,7 +25,7 @@ def build_max_heap(array):
     for i in range(n // 2, -1, -1):
         max_heapify(array, i, n)
     
-def heapSort(array):
+def heap_sort(array):
     n = len(array)
     build_max_heap(array)
     for i in range(n, 1, -1):
@@ -42,6 +42,6 @@ def update(array, bars):
     numberOfSwaps.set_text("Swaps: {}".format(swaps))
     
 anim = an.FuncAnimation(fig, func=update,
-    fargs=(bars, ), frames=heapSort(array), interval=1,
+    fargs=(bars, ), frames=heap_sort(array), interval=1,
     repeat=False)
 plt.show()
