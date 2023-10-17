@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as an
-import numpy as np
+from DatasetGenerator import get_dataset
 
 swaps = 0
 fig, ax = plt.subplots()
 ax.set_title('Bubble Sort')
 numberOfSwaps = ax.text(0.01, 0.95, "", transform=ax.transAxes)
-array = np.random.randint(100, size=(100))
+array = get_dataset()
 bars = ax.bar(range(len(array)), array, color='black')
 
 def bubbleSort(array):
